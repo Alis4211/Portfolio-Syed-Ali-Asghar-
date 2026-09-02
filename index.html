@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Syed Ali Asghar Shah | Portfolio</title>
     <style>
-        /* CSS Variables for Theme */
         :root {
             --bg-color: #0d0d0d;
             --card-bg: #1a1a1a;
@@ -14,7 +13,6 @@
             --accent-glow: rgba(211, 47, 47, 0.6);
         }
 
-        /* Base Styles */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -29,7 +27,6 @@
             overflow-x: hidden;
         }
 
-        /* Animations */
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-30px); }
             to { opacity: 1; transform: translateY(0); }
@@ -51,7 +48,6 @@
             to { opacity: 1; transform: translateX(0); }
         }
 
-        /* Header Section */
         header {
             text-align: center;
             padding: 4rem 2rem 2rem;
@@ -86,7 +82,6 @@
             margin-bottom: 2rem;
         }
 
-        /* Buttons & Links */
         .btn {
             display: inline-block;
             background-color: transparent;
@@ -111,7 +106,6 @@
             background-color: var(--accent-red);
         }
 
-        /* Slideshow Section */
         .portfolio-section {
             max-width: 900px;
             margin: 2rem auto;
@@ -151,7 +145,6 @@
             animation: slideInRight 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
-        /* Slideshow Controls */
         .controls {
             display: flex;
             justify-content: space-between;
@@ -160,7 +153,6 @@
             border-top: 1px solid #333;
         }
 
-        /* Dynamic Links Grid */
         .links-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -192,10 +184,23 @@
             display: block;
         }
 
+        /* New Gallery Styles */
+        .gallery-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .gallery-preview img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #444;
+        }
     </style>
 </head>
 <body>
-
     <header>
         <img src="pic.jpg" alt="Syed Ali Asghar Shah" class="profile-img">
         <h1>Syed Ali Asghar Shah</h1>
@@ -203,7 +208,7 @@
         
         <div>
             <a href="https://ali-asghar-shah.itch.io/" target="_blank" class="btn btn-solid">Visit My Itch.io</a>
-            <a href="#projects" class="btn">View Projects</a>
+            <button onclick="copyShareLink()" class="btn">🔗 Copy Share Link</button>
         </div>
     </header>
 
@@ -211,7 +216,6 @@
         <h2 class="section-title">Creative Showcase</h2>
 
         <div class="slideshow-container">
-            
             <div class="slide active">
                 <h3>Indie Game Dev Projects</h3>
                 <p style="margin-bottom: 2rem; color: #ccc;">Check out my collection of published games and prototypes built in Unity.</p>
@@ -221,10 +225,15 @@
             </div>
 
             <div class="slide">
-                <h3>Upcoming Project</h3>
-                <p style="margin-bottom: 1rem; color: #ccc;">Currently working on new mechanics and systems.</p>
-                <div style="height: 200px; display: flex; align-items: center; justify-content: center; border: 2px dashed #444; border-radius: 10px;">
-                    <span style="color: #666;">More WebGL Projects Coming Soon</span>
+                <h3>Project Image Gallery</h3>
+                <p style="margin-bottom: 1rem; color: #ccc;">Preview project files directly from your device.</p>
+                
+                <!-- Hidden file input -->
+                <input type="file" id="file-uploader" accept="image/*" multiple style="display: none;" onchange="previewImages(event)">
+                <button class="btn btn-solid" onclick="document.getElementById('file-uploader').click()">📁 Browse PC/Mobile</button>
+                
+                <div class="gallery-preview" id="image-gallery">
+                    <!-- Uploaded images will appear here temporarily -->
                 </div>
             </div>
 
@@ -245,35 +254,52 @@
                 <div class="link-card">
                     <a href="#" target="_blank">🔗 Add Your Next Link Here</a>
                 </div>
-                </div>
+
+            </div>
         </div>
     </main>
 
     <script>
+        // Slideshow Logic
         let currentSlideIndex = 0;
         const slides = document.querySelectorAll('.slide');
 
         function showSlide(index) {
-            // Hide all slides
-            slides.forEach(slide => {
-                slide.classList.remove('active');
-            });
-
-            // Loop logic
-            if (index >= slides.length) {
-                currentSlideIndex = 0;
-            } else if (index < 0) {
-                currentSlideIndex = slides.length - 1;
-            } else {
-                currentSlideIndex = index;
-            }
-
-            // Show the current slide
+            slides.forEach(slide => slide.classList.remove('active'));
+            if (index >= slides.length) currentSlideIndex = 0;
+            else if (index < 0) currentSlideIndex = slides.length - 1;
+            else currentSlideIndex = index;
             slides[currentSlideIndex].classList.add('active');
         }
 
         function changeSlide(direction) {
             showSlide(currentSlideIndex + direction);
+        }
+
+        // New Feature: Local Image Preview
+        function previewImages(event) {
+            const gallery = document.getElementById('image-gallery');
+            const files = event.target.files;
+
+            for (let i = 0; i < files.length; i++) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    gallery.appendChild(img);
+                }
+                reader.readAsDataURL(files[i]);
+            }
+        }
+
+        // New Feature: Copy Share Link
+        function copyShareLink() {
+            const currentUrl = window.location.href;
+            navigator.clipboard.writeText(currentUrl).then(() => {
+                alert("Read-only portfolio link copied to clipboard!\n\n" + currentUrl);
+            }).catch(err => {
+                alert("Failed to copy link. You can manually copy the URL from your browser's address bar.");
+            });
         }
     </script>
 </body>
