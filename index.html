@@ -51,8 +51,6 @@
             transition: transform 0.3s ease;
         }
 
-        .profile-img:hover { transform: scale(1.05); }
-
         h1 { font-size: 2.5rem; margin-bottom: 0.5rem; letter-spacing: 2px; text-transform: uppercase; }
         .subtitle { color: #aaaaaa; font-size: 1.2rem; margin-bottom: 2rem; }
 
@@ -64,6 +62,7 @@
 
         .btn:hover { background-color: var(--accent-red); box-shadow: 0 0 15px var(--accent-red); transform: translateY(-3px); }
         .btn-solid { background-color: var(--accent-red); }
+        .btn-small { padding: 5px 15px; font-size: 0.9rem; margin-top: 10px; }
 
         .skills-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 2rem; }
         .skill-tag {
@@ -88,47 +87,68 @@
         .slide { display: none; padding: 2rem; text-align: center; }
         .slide.active { display: block; animation: slideInRight 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
         
-        .iframe-container { position: relative; width: 100%; padding-bottom: 56.25%; margin-bottom: 1rem; background: #000; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid #333; }
-        .iframe-container iframe {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            border: none; border-radius: 10px;
+        .iframe-container { 
+            position: relative; width: 100%; padding-bottom: 56.25%; margin-bottom: 1rem; 
+            background: #000; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid #333;
         }
+        .iframe-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 10px; }
 
         .controls { display: flex; justify-content: space-between; padding: 1rem 2rem; background: #111; border-top: 1px solid #333; }
 
-        .links-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 3rem; padding-bottom: 4rem; }
+        .links-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem; padding-bottom: 4rem; }
         .link-card {
             background: var(--card-bg); padding: 1.5rem; border-radius: 10px; text-align: center;
             border-left: 4px solid var(--accent-red); transition: all 0.3s;
         }
         .link-card:hover { transform: translateY(-5px) scale(1.02); background: #222; box-shadow: 0 5px 15px var(--accent-glow); }
-        .link-card a { color: white; text-decoration: none; font-size: 1.1rem; font-weight: bold; display: block; }
+        .link-card a { color: white; text-decoration: none; font-size: 1.1rem; font-weight: bold; display: block; word-wrap: break-word; }
 
-        .gallery-preview { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
-        .gallery-preview img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; border: 2px solid #444; }
+        .gallery-preview { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+        .gallery-preview img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; border: 2px solid #444; }
+
+        /* PRIVACY LOGIC */
+        body.public-view .edit-only { display: none !important; }
+        
+        .admin-banner {
+            background-color: var(--accent-red); color: white; text-align: center; padding: 5px;
+            font-size: 0.9rem; font-weight: bold; display: none;
+        }
+        body:not(.public-view) .admin-banner { display: block; }
+
+        .input-group { background: #111; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px dashed #444; }
+        .input-group input { padding: 8px; width: 80%; margin-bottom: 10px; background: #222; border: 1px solid #444; color: white; border-radius: 4px; }
     </style>
 </head>
 <body>
+    
+    <div class="admin-banner edit-only">
+        🛠️ EDIT MODE: Added links/images are saved to your browser. Use "Copy Public Share Link" to generate a URL with your updates!
+    </div>
 
     <header>
         <div class="profile-container">
-            <!-- Ensure your image is named exactly pic.jpg and uploaded to your hosting folder -->
-            <img src="pic.jpg" alt="Syed Ali Asghar Shah" class="profile-img" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Syed+Ali+Asghar+Shah&background=d32f2f&color=fff&size=180';">
+            <img src="pic.jpg" alt="Syed Ali Asghar Shah" id="profileImage" class="profile-img" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Syed+Ali+Asghar+Shah&background=d32f2f&color=fff&size=180';">
+            
+            <div class="edit-only input-group">
+                <input type="text" id="pfpInputUrl" placeholder="Paste Profile Image URL (e.g. from Discord/Imgur)">
+                <button class="btn btn-small btn-solid" onclick="updateProfilePicURL()">Update Image</button>
+            </div>
         </div>
         
         <h1>Syed Ali Asghar Shah</h1>
-        <p class="subtitle">Computer Engineer & Full-Stack Game Developer</p>
+        <p class="subtitle">Computer Engineer & Game Developer</p>
         
         <div class="skills-container">
             <span class="skill-tag">Unity 3D/2D</span>
             <span class="skill-tag">C#</span>
-            <span class="skill-tag">Figma</span>
             <span class="skill-tag">React & TS</span>
             <span class="skill-tag">Node.js</span>
+            <span class="skill-tag">Figma</span>
         </div>
 
         <div>
             <a href="https://ali-asghar-shah.itch.io/" target="_blank" class="btn btn-solid">Visit My Itch.io</a>
+            <button onclick="copyShareLink()" class="btn edit-only" style="border-color: #4caf50; color: #4caf50;">🔗 Copy Public Share Link</button>
         </div>
     </header>
 
@@ -137,45 +157,38 @@
 
         <div class="slideshow-container">
             
-            <!-- Slide 1: Unity WebGL Link 1 (Lazy Loaded for Speed) -->
+            <!-- Slide 1: Fast Loading Unity Build 1 -->
             <div class="slide active">
                 <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">Action Prototype Build</h3>
                 <div class="iframe-container" id="game1-container">
-                    <button class="btn btn-solid" onclick="loadUnityGame('game1-container', 'https://play.unity.com/api/v1/games/game/d61e9701-0314-4398-8d97-fd3e434e5897/build/latest/frame')">
-                        🎮 Click to Load & Play
+                    <button class="btn btn-solid" onclick="this.parentElement.innerHTML='<iframe src=\'https://play.unity.com/api/v1/games/game/d61e9701-0314-4398-8d97-fd3e434e5897/build/latest/frame\' allowfullscreen></iframe>'">
+                        ▶️ Load Game 1 (Fast Start)
                     </button>
                 </div>
             </div>
 
-            <!-- Slide 2: Unity WebGL Link 2 (Lazy Loaded for Speed) -->
+            <!-- Slide 2: Fast Loading Unity Build 2 -->
             <div class="slide">
                 <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">Interactive WebGL Prototype</h3>
                 <div class="iframe-container" id="game2-container">
-                    <button class="btn btn-solid" onclick="loadUnityGame('game2-container', 'https://play.unity.com/api/v1/games/game/bf1ba4a3-0fe8-4af8-9eb5-29948391917d/build/latest/frame')">
-                        🎮 Click to Load & Play
+                    <button class="btn btn-solid" onclick="this.parentElement.innerHTML='<iframe src=\'https://play.unity.com/api/v1/games/game/bf1ba4a3-0fe8-4af8-9eb5-29948391917d/build/latest/frame\' allowfullscreen></iframe>'">
+                        ▶️ Load Game 2 (Fast Start)
                     </button>
                 </div>
             </div>
 
-            <!-- Slide 3: Itch.io Profile -->
-            <div class="slide">
-                <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">Indie Game Dev Projects</h3>
-                <p style="margin-bottom: 2rem; color: #ccc;">Check out my complete collection of published games and prototypes.</p>
-                <a href="https://ali-asghar-shah.itch.io/" target="_blank" class="btn btn-solid" style="padding: 15px 40px; font-size: 1.2rem;">
-                    🎮 Open Itch.io Page
-                </a>
-            </div>
-
-            <!-- Slide 4: Permanent Project Gallery -->
+            <!-- Slide 3: Web Image Gallery -->
             <div class="slide">
                 <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">Project Gallery</h3>
-                <p style="margin-bottom: 1rem; color: #ccc;">Screenshots and assets from recent work.</p>
                 
-                <div class="gallery-preview">
-                    <!-- Upload these images to your hosting folder, then change the src below to match the file names -->
-                    <img src="https://via.placeholder.com/400x200/222/fff?text=Add+Project+Image+1" alt="Project 1">
-                    <img src="https://via.placeholder.com/400x200/222/fff?text=Add+Project+Image+2" alt="Project 2">
+                <div class="edit-only input-group">
+                    <p style="margin-bottom: 10px; font-size: 0.9rem; color: #ccc;">To share images, paste web URLs (not files from PC).</p>
+                    <input type="text" id="galleryInputUrl" placeholder="Paste Web Image URL (https://...)">
+                    <button class="btn btn-small btn-solid" onclick="addGalleryImageURL()">Add to Gallery</button>
+                    <button class="btn btn-small" onclick="clearGallery()">Clear</button>
                 </div>
+                
+                <div class="gallery-preview" id="image-gallery"></div>
             </div>
 
             <div class="controls">
@@ -186,33 +199,124 @@
 
         <div style="margin-top: 4rem;">
             <h2 class="section-title">Connect & Discover</h2>
-            <div class="links-grid">
-                
-                <!-- EXISTING LINKS -->
+            
+            <div class="edit-only input-group" style="max-width: 500px; margin: 0 auto 2rem;">
+                <h4>Add New External Link</h4>
+                <input type="text" id="newLinkTitle" placeholder="Button Title (e.g. My New Unity Game)">
+                <input type="text" id="newLinkUrl" placeholder="URL Link (https://...)">
+                <button class="btn btn-small btn-solid" onclick="addNewLink()">➕ Add Custom Link</button>
+                <button class="btn btn-small" onclick="clearLinks()">Clear Custom</button>
+            </div>
+
+            <div class="links-grid" id="dynamic-links">
                 <div class="link-card">
                     <a href="https://ali-asghar-shah.itch.io/" target="_blank">🕹️ Itch.io Portfolio</a>
                 </div>
-                <div class="link-card">
-                    <a href="https://play.unity.com/api/v1/games/game/d61e9701-0314-4398-8d97-fd3e434e5897/build/latest/frame" target="_blank">🌐 Play Build 1</a>
-                </div>
-                <div class="link-card">
-                    <a href="https://play.unity.com/api/v1/games/game/bf1ba4a3-0fe8-4af8-9eb5-29948391917d/build/latest/frame" target="_blank">🌐 Play Build 2</a>
-                </div>
-
-                <!-- ADD NEW LINKS BY COPYING THIS BLOCK -->
-                <div class="link-card">
-                    <a href="#" target="_blank">🔗 Add Your New Link Here</a>
-                </div>
-
+                <!-- Custom links will inject here -->
             </div>
         </div>
     </main>
 
     <script>
-        // --- PERFORMANCE OPTIMIZATION: Lazy Load Unity Games ---
-        function loadUnityGame(containerId, url) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = `<iframe src="${url}" allowfullscreen loading="lazy"></iframe>`;
+        // --- DATA STATE (Local & URL Syncing) ---
+        let state = {
+            pfp: "",
+            gallery: [],
+            links: []
+        };
+
+        // Initialize App State
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Check if we are in Public View (Reading from URL)
+            if (urlParams.get('view') === 'public') {
+                document.body.classList.add('public-view');
+                try {
+                    const encodedData = urlParams.get('data');
+                    if (encodedData) state = JSON.parse(atob(decodeURIComponent(encodedData)));
+                } catch (e) { console.error("Could not parse public data."); }
+            } 
+            // Check if we are in Edit View (Reading from Browser Storage)
+            else {
+                const savedState = localStorage.getItem('portfolioState');
+                if (savedState) state = JSON.parse(savedState);
+            }
+
+            renderState();
+        };
+
+        function saveState() {
+            localStorage.setItem('portfolioState', JSON.stringify(state));
+            renderState();
+        }
+
+        function renderState() {
+            // Render PFP
+            if (state.pfp) document.getElementById('profileImage').src = state.pfp;
+
+            // Render Gallery
+            const gallery = document.getElementById('image-gallery');
+            gallery.innerHTML = '';
+            state.gallery.forEach(url => {
+                gallery.innerHTML += `<img src="${url}" alt="Project Image">`;
+            });
+
+            // Render Custom Links
+            const linkGrid = document.getElementById('dynamic-links');
+            // Keep default Itch.io link, clear the rest
+            linkGrid.innerHTML = `
+                <div class="link-card">
+                    <a href="https://ali-asghar-shah.itch.io/" target="_blank">🕹️ Itch.io Portfolio</a>
+                </div>
+            `;
+            state.links.forEach(link => {
+                linkGrid.innerHTML += `
+                    <div class="link-card">
+                        <a href="${link.url}" target="_blank">🔗 ${link.title}</a>
+                    </div>
+                `;
+            });
+        }
+
+        // --- EDIT MODE ACTIONS ---
+        function updateProfilePicURL() {
+            const url = document.getElementById('pfpInputUrl').value.trim();
+            if (url) { state.pfp = url; saveState(); document.getElementById('pfpInputUrl').value = ''; }
+        }
+
+        function addGalleryImageURL() {
+            const url = document.getElementById('galleryInputUrl').value.trim();
+            if (url) { state.gallery.push(url); saveState(); document.getElementById('galleryInputUrl').value = ''; }
+        }
+
+        function clearGallery() { state.gallery = []; saveState(); }
+
+        function addNewLink() {
+            const title = document.getElementById('newLinkTitle').value.trim();
+            const url = document.getElementById('newLinkUrl').value.trim();
+            if (title && url) { 
+                state.links.push({title, url}); 
+                saveState(); 
+                document.getElementById('newLinkTitle').value = ''; 
+                document.getElementById('newLinkUrl').value = ''; 
+            }
+        }
+        
+        function clearLinks() { state.links = []; saveState(); }
+
+        // --- MAGIC SHARE LINK GENERATOR ---
+        function copyShareLink() {
+            const cleanUrl = window.location.origin + window.location.pathname;
+            // Pack all saved data into the URL string mathematically
+            const encodedData = encodeURIComponent(btoa(JSON.stringify(state)));
+            const publicUrl = `${cleanUrl}?view=public&data=${encodedData}`;
+            
+            navigator.clipboard.writeText(publicUrl).then(() => {
+                alert("✅ Read-Only Link Copied!\n\nThis magical link contains all your custom links and images baked into the URL.\n\nAnyone who opens it will see your exact updates!");
+            }).catch(err => {
+                alert("Failed to copy. URL is too long or clipboard blocked.");
+            });
         }
 
         // --- SLIDESHOW LOGIC ---
@@ -226,10 +330,7 @@
             else currentSlideIndex = index;
             slides[currentSlideIndex].classList.add('active');
         }
-        
-        function changeSlide(direction) { 
-            showSlide(currentSlideIndex + direction); 
-        }
+        function changeSlide(direction) { showSlide(currentSlideIndex + direction); }
     </script>
 </body>
 </html>
