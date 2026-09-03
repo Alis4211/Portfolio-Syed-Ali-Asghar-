@@ -21,20 +21,17 @@
             color: var(--text-color);
             line-height: 1.6;
             overflow-x: hidden;
-            /* Cool Cyber-Grid Background for Game Dev feel */
             background-image: 
                 linear-gradient(rgba(211, 47, 47, 0.05) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(211, 47, 47, 0.05) 1px, transparent 1px);
             background-size: 30px 30px;
         }
 
-        /* Animations */
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulseGlow { 0% { box-shadow: 0 0 10px var(--accent-glow); } 50% { box-shadow: 0 0 25px var(--accent-red); } 100% { box-shadow: 0 0 10px var(--accent-glow); } }
         @keyframes slideInRight { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
 
-        /* Header Section */
         header {
             text-align: center;
             padding: 4rem 2rem 2rem;
@@ -67,19 +64,14 @@
 
         .btn:hover { background-color: var(--accent-red); box-shadow: 0 0 15px var(--accent-red); transform: translateY(-3px); }
         .btn-solid { background-color: var(--accent-red); }
-        .btn-small { padding: 5px 15px; font-size: 0.9rem; margin-top: 10px; }
 
-        /* Skills Section */
-        .skills-container {
-            display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 2rem;
-        }
+        .skills-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 2rem; }
         .skill-tag {
             background: #222; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem;
             border: 1px solid #444; color: #ddd; transition: 0.3s;
         }
         .skill-tag:hover { border-color: var(--accent-red); color: white; }
 
-        /* Slideshow Section */
         .portfolio-section { max-width: 900px; margin: 2rem auto; padding: 0 1rem; animation: fadeInUp 1s ease-out 0.5s both; }
         
         .section-title {
@@ -96,15 +88,14 @@
         .slide { display: none; padding: 2rem; text-align: center; }
         .slide.active { display: block; animation: slideInRight 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
         
-        .iframe-container { position: relative; width: 100%; padding-bottom: 56.25%; margin-bottom: 1rem; }
+        .iframe-container { position: relative; width: 100%; padding-bottom: 56.25%; margin-bottom: 1rem; background: #000; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid #333; }
         .iframe-container iframe {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            border: none; border-radius: 10px; background-color: #000;
+            border: none; border-radius: 10px;
         }
 
         .controls { display: flex; justify-content: space-between; padding: 1rem 2rem; background: #111; border-top: 1px solid #333; }
 
-        /* Dynamic Links Grid */
         .links-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 3rem; padding-bottom: 4rem; }
         .link-card {
             background: var(--card-bg); padding: 1.5rem; border-radius: 10px; text-align: center;
@@ -113,52 +104,31 @@
         .link-card:hover { transform: translateY(-5px) scale(1.02); background: #222; box-shadow: 0 5px 15px var(--accent-glow); }
         .link-card a { color: white; text-decoration: none; font-size: 1.1rem; font-weight: bold; display: block; }
 
-        .gallery-preview { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
-        .gallery-preview img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; border: 2px solid #444; }
-
-        /* PRIVACY / EDIT MODE LOGIC */
-        body.public-view .edit-only {
-            display: none !important;
-        }
-        
-        .admin-banner {
-            background-color: var(--accent-red); color: white; text-align: center; padding: 5px;
-            font-size: 0.9rem; font-weight: bold; display: none;
-        }
-        body:not(.public-view) .admin-banner { display: block; }
+        .gallery-preview { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+        .gallery-preview img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; border: 2px solid #444; }
     </style>
 </head>
 <body>
-    
-    <!-- Status Banner -->
-    <div class="admin-banner edit-only">
-        🛠️ EDIT MODE ACTIVE: You can upload images. Viewers using the Share Link will not see this.
-    </div>
 
     <header>
         <div class="profile-container">
-            <img src="pic.jpg" alt="Syed Ali Asghar Shah" id="profileImage" class="profile-img" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Syed+Ali+Asghar+Shah&background=d32f2f&color=fff&size=180';">
-            
-            <!-- Hidden Input to upload Profile Pic -->
-            <br>
-            <input type="file" id="profile-uploader" accept="image/*" style="display: none;" onchange="updateProfilePic(event)">
-            <button class="btn btn-small edit-only" onclick="document.getElementById('profile-uploader').click()">📷 Change Picture</button>
+            <!-- Ensure your image is named exactly pic.jpg and uploaded to your hosting folder -->
+            <img src="pic.jpg" alt="Syed Ali Asghar Shah" class="profile-img" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=Syed+Ali+Asghar+Shah&background=d32f2f&color=fff&size=180';">
         </div>
         
         <h1>Syed Ali Asghar Shah</h1>
-        <p class="subtitle">Computer Engineer & Game Developer</p>
+        <p class="subtitle">Computer Engineer & Full-Stack Game Developer</p>
         
-        <!-- Tech Stack Tags -->
         <div class="skills-container">
             <span class="skill-tag">Unity 3D/2D</span>
             <span class="skill-tag">C#</span>
             <span class="skill-tag">Figma</span>
+            <span class="skill-tag">React & TS</span>
+            <span class="skill-tag">Node.js</span>
         </div>
 
         <div>
             <a href="https://ali-asghar-shah.itch.io/" target="_blank" class="btn btn-solid">Visit My Itch.io</a>
-            <!-- This button generates the safe read-only link -->
-            <button onclick="copyShareLink()" class="btn edit-only">🔗 Copy Public Share Link</button>
         </div>
     </header>
 
@@ -167,19 +137,23 @@
 
         <div class="slideshow-container">
             
-            <!-- Slide 1: Unity WebGL Link 1 -->
+            <!-- Slide 1: Unity WebGL Link 1 (Lazy Loaded for Speed) -->
             <div class="slide active">
                 <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">Action Prototype Build</h3>
-                <div class="iframe-container">
-                    <iframe src="https://play.unity.com/api/v1/games/game/d61e9701-0314-4398-8d97-fd3e434e5897/build/latest/frame" allowfullscreen></iframe>
+                <div class="iframe-container" id="game1-container">
+                    <button class="btn btn-solid" onclick="loadUnityGame('game1-container', 'https://play.unity.com/api/v1/games/game/d61e9701-0314-4398-8d97-fd3e434e5897/build/latest/frame')">
+                        🎮 Click to Load & Play
+                    </button>
                 </div>
             </div>
 
-            <!-- Slide 2: Unity WebGL Link 2 -->
+            <!-- Slide 2: Unity WebGL Link 2 (Lazy Loaded for Speed) -->
             <div class="slide">
                 <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">Interactive WebGL Prototype</h3>
-                <div class="iframe-container">
-                    <iframe src="https://play.unity.com/api/v1/games/game/bf1ba4a3-0fe8-4af8-9eb5-29948391917d/build/latest/frame" allowfullscreen></iframe>
+                <div class="iframe-container" id="game2-container">
+                    <button class="btn btn-solid" onclick="loadUnityGame('game2-container', 'https://play.unity.com/api/v1/games/game/bf1ba4a3-0fe8-4af8-9eb5-29948391917d/build/latest/frame')">
+                        🎮 Click to Load & Play
+                    </button>
                 </div>
             </div>
 
@@ -192,19 +166,15 @@
                 </a>
             </div>
 
-            <!-- Slide 4: Project Image Uploader / Gallery -->
+            <!-- Slide 4: Permanent Project Gallery -->
             <div class="slide">
                 <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">Project Gallery</h3>
+                <p style="margin-bottom: 1rem; color: #ccc;">Screenshots and assets from recent work.</p>
                 
-                <div class="edit-only">
-                    <p style="margin-bottom: 1rem; color: #ccc;">Upload screenshots of your latest work.</p>
-                    <input type="file" id="gallery-uploader" accept="image/*" multiple style="display: none;" onchange="previewImages(event)">
-                    <button class="btn btn-solid" onclick="document.getElementById('gallery-uploader').click()">📁 Add Images to Gallery</button>
-                    <button class="btn" onclick="clearGallery()">🗑️ Clear Gallery</button>
-                </div>
-                
-                <div class="gallery-preview" id="image-gallery">
-                    <!-- Uploaded images appear here -->
+                <div class="gallery-preview">
+                    <!-- Upload these images to your hosting folder, then change the src below to match the file names -->
+                    <img src="https://via.placeholder.com/400x200/222/fff?text=Add+Project+Image+1" alt="Project 1">
+                    <img src="https://via.placeholder.com/400x200/222/fff?text=Add+Project+Image+2" alt="Project 2">
                 </div>
             </div>
 
@@ -216,8 +186,9 @@
 
         <div style="margin-top: 4rem;">
             <h2 class="section-title">Connect & Discover</h2>
-            <div class="links-grid" id="dynamic-links">
+            <div class="links-grid">
                 
+                <!-- EXISTING LINKS -->
                 <div class="link-card">
                     <a href="https://ali-asghar-shah.itch.io/" target="_blank">🕹️ Itch.io Portfolio</a>
                 </div>
@@ -227,8 +198,10 @@
                 <div class="link-card">
                     <a href="https://play.unity.com/api/v1/games/game/bf1ba4a3-0fe8-4af8-9eb5-29948391917d/build/latest/frame" target="_blank">🌐 Play Build 2</a>
                 </div>
-                <div class="link-card edit-only">
-                    <a href="#" target="_blank">🔗 Add More Links in Code</a>
+
+                <!-- ADD NEW LINKS BY COPYING THIS BLOCK -->
+                <div class="link-card">
+                    <a href="#" target="_blank">🔗 Add Your New Link Here</a>
                 </div>
 
             </div>
@@ -236,31 +209,11 @@
     </main>
 
     <script>
-        // --- PRIVACY & MODE LOGIC ---
-        // Check if the URL has ?view=public
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('view') === 'public') {
-            // Hides all edit buttons and banners
-            document.body.classList.add('public-view');
+        // --- PERFORMANCE OPTIMIZATION: Lazy Load Unity Games ---
+        function loadUnityGame(containerId, url) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `<iframe src="${url}" allowfullscreen loading="lazy"></iframe>`;
         }
-
-        // --- LOCAL STORAGE DATA LOAD ---
-        window.onload = function() {
-            // Load saved profile picture
-            const savedPic = localStorage.getItem('customProfilePic');
-            if (savedPic) {
-                document.getElementById('profileImage').src = savedPic;
-            }
-
-            // Load saved gallery images
-            const savedGallery = JSON.parse(localStorage.getItem('savedGalleryImages')) || [];
-            const gallery = document.getElementById('image-gallery');
-            savedGallery.forEach(imgSrc => {
-                const img = document.createElement('img');
-                img.src = imgSrc;
-                gallery.appendChild(img);
-            });
-        };
 
         // --- SLIDESHOW LOGIC ---
         let currentSlideIndex = 0;
@@ -273,63 +226,9 @@
             else currentSlideIndex = index;
             slides[currentSlideIndex].classList.add('active');
         }
-        function changeSlide(direction) { showSlide(currentSlideIndex + direction); }
-
-        // --- PROFILE IMAGE UPLOAD (Saves to Browser) ---
-        function updateProfilePic(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const dataUrl = e.target.result;
-                    document.getElementById('profileImage').src = dataUrl;
-                    localStorage.setItem('customProfilePic', dataUrl); // Save locally
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // --- GALLERY UPLOAD LOGIC (Saves to Browser) ---
-        function previewImages(event) {
-            const gallery = document.getElementById('image-gallery');
-            const files = event.target.files;
-            let savedGallery = JSON.parse(localStorage.getItem('savedGalleryImages')) || [];
-
-            for (let i = 0; i < files.length; i++) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const dataUrl = e.target.result;
-                    const img = document.createElement('img');
-                    img.src = dataUrl;
-                    gallery.appendChild(img);
-                    
-                    savedGallery.push(dataUrl);
-                    // Attempt to save to storage (catch error if quota exceeded)
-                    try { localStorage.setItem('savedGalleryImages', JSON.stringify(savedGallery)); } 
-                    catch(err) { console.warn("Storage full, image only visible temporarily."); }
-                }
-                reader.readAsDataURL(files[i]);
-            }
-        }
-
-        function clearGallery() {
-            if(confirm("Delete all uploaded gallery images?")) {
-                localStorage.removeItem('savedGalleryImages');
-                document.getElementById('image-gallery').innerHTML = '';
-            }
-        }
-
-        // --- SECURE SHARE LINK GENERATOR ---
-        function copyShareLink() {
-            // Gets base URL and appends the view=public parameter to lock viewers out of Edit mode
-            const cleanUrl = window.location.origin + window.location.pathname;
-            const publicUrl = cleanUrl + "?view=public";
-            
-            navigator.clipboard.writeText(publicUrl).then(() => {
-                alert("🔒 Read-Only link copied!\n\nWhen people open this link, all 'Edit' and 'Upload' buttons will be invisible.\n\nLink: " + publicUrl);
-            }).catch(err => {
-                alert("Failed to copy. Share this exact URL manually: " + publicUrl);
-            });
+        
+        function changeSlide(direction) { 
+            showSlide(currentSlideIndex + direction); 
         }
     </script>
 </body>
