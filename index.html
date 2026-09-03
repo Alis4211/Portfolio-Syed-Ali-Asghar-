@@ -117,12 +117,14 @@
 
         .input-group { background: #111; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px dashed #444; }
         .input-group input { padding: 8px; width: 80%; margin-bottom: 10px; background: #222; border: 1px solid #444; color: white; border-radius: 4px; }
+        
+        .slide-desc { color: #ccc; margin-top: 1.5rem; font-size: 1.1rem; line-height: 1.5; white-space: pre-wrap;}
     </style>
 </head>
 <body>
     
     <div class="admin-banner edit-only">
-        🛠️ EDIT MODE: Added links/images are saved to your browser. Use "Copy Public Share Link" to generate a URL with your updates!
+        🛠️ EDIT MODE: Added links/images/descriptions are saved to your browser. Use "Copy Public Share Link" to generate a URL with your updates!
     </div>
 
     <header>
@@ -141,6 +143,8 @@
         <div class="skills-container">
             <span class="skill-tag">Unity 3D/2D</span>
             <span class="skill-tag">C#</span>
+            <span class="skill-tag">React & TS</span>
+            <span class="skill-tag">Node.js</span>
             <span class="skill-tag">Figma</span>
         </div>
 
@@ -163,6 +167,12 @@
                         ▶️ Load Game 1 (Fast Start)
                     </button>
                 </div>
+                <!-- Custom Slide Description -->
+                <p class="slide-desc" id="desc-display-0"></p>
+                <div class="edit-only input-group" style="padding: 10px;">
+                    <input type="text" id="desc-input-0" placeholder="Add custom description here...">
+                    <button class="btn btn-small btn-solid" onclick="updateDescription(0)">Save Text</button>
+                </div>
             </div>
 
             <!-- Slide 2: Fast Loading Unity Build 2 -->
@@ -172,6 +182,12 @@
                     <button class="btn btn-solid" onclick="this.parentElement.innerHTML='<iframe src=\'https://play.unity.com/api/v1/games/game/bf1ba4a3-0fe8-4af8-9eb5-29948391917d/build/latest/frame\' allowfullscreen></iframe>'">
                         ▶️ Load Game 2 (Fast Start)
                     </button>
+                </div>
+                <!-- Custom Slide Description -->
+                <p class="slide-desc" id="desc-display-1"></p>
+                <div class="edit-only input-group" style="padding: 10px;">
+                    <input type="text" id="desc-input-1" placeholder="Add custom description here...">
+                    <button class="btn btn-small btn-solid" onclick="updateDescription(1)">Save Text</button>
                 </div>
             </div>
 
@@ -187,6 +203,13 @@
                 </div>
                 
                 <div class="gallery-preview" id="image-gallery"></div>
+
+                <!-- Custom Slide Description -->
+                <p class="slide-desc" id="desc-display-2"></p>
+                <div class="edit-only input-group" style="padding: 10px;">
+                    <input type="text" id="desc-input-2" placeholder="Add custom description here...">
+                    <button class="btn btn-small btn-solid" onclick="updateDescription(2)">Save Text</button>
+                </div>
             </div>
 
             <div class="controls">
@@ -220,7 +243,8 @@
         let state = {
             pfp: "",
             gallery: [],
-            links: []
+            links: [],
+            descriptions: ["", "", ""] // New: Stores text for the 3 slides
         };
 
         // Initialize App State
@@ -232,13 +256,19 @@
                 document.body.classList.add('public-view');
                 try {
                     const encodedData = urlParams.get('data');
-                    if (encodedData) state = JSON.parse(atob(decodeURIComponent(encodedData)));
+                    if (encodedData) {
+                        const parsed = JSON.parse(atob(decodeURIComponent(encodedData)));
+                        state = { ...state, ...parsed }; // Merge to preserve defaults
+                    }
                 } catch (e) { console.error("Could not parse public data."); }
             } 
             // Check if we are in Edit View (Reading from Browser Storage)
             else {
                 const savedState = localStorage.getItem('portfolioState');
-                if (savedState) state = JSON.parse(savedState);
+                if (savedState) {
+                    const parsed = JSON.parse(savedState);
+                    state = { ...state, ...parsed };
+                }
             }
 
             renderState();
@@ -262,7 +292,6 @@
 
             // Render Custom Links
             const linkGrid = document.getElementById('dynamic-links');
-            // Keep default Itch.io link, clear the rest
             linkGrid.innerHTML = `
                 <div class="link-card">
                     <a href="https://ali-asghar-shah.itch.io/" target="_blank">🕹️ Itch.io Portfolio</a>
@@ -275,6 +304,14 @@
                     </div>
                 `;
             });
+
+            // Render Descriptions
+            for (let i = 0; i < 3; i++) {
+                const displayArea = document.getElementById(`desc-display-${i}`);
+                const inputArea = document.getElementById(`desc-input-${i}`);
+                if (displayArea) displayArea.innerText = state.descriptions[i] || "";
+                if (inputArea) inputArea.value = state.descriptions[i] || "";
+            }
         }
 
         // --- EDIT MODE ACTIONS ---
@@ -303,15 +340,20 @@
         
         function clearLinks() { state.links = []; saveState(); }
 
+        function updateDescription(slideIndex) {
+            const text = document.getElementById(`desc-input-${slideIndex}`).value.trim();
+            state.descriptions[slideIndex] = text;
+            saveState();
+        }
+
         // --- MAGIC SHARE LINK GENERATOR ---
         function copyShareLink() {
             const cleanUrl = window.location.origin + window.location.pathname;
-            // Pack all saved data into the URL string mathematically
             const encodedData = encodeURIComponent(btoa(JSON.stringify(state)));
             const publicUrl = `${cleanUrl}?view=public&data=${encodedData}`;
             
             navigator.clipboard.writeText(publicUrl).then(() => {
-                alert("✅ Read-Only Link Copied!\n\nThis magical link contains all your custom links and images baked into the URL.\n\nAnyone who opens it will see your exact updates!");
+                alert("✅ Read-Only Link Copied!\n\nThis magical link contains all your custom links, images, and descriptions baked into the URL.\n\nAnyone who opens it will see your exact updates!");
             }).catch(err => {
                 alert("Failed to copy. URL is too long or clipboard blocked.");
             });
